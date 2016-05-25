@@ -1,14 +1,14 @@
 {
     "name": "eq-digest-authentication-strategy",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Strategy module for eq-digest-authentication",
-    "homepage": "https://github.com/eq-inc/eq-strategy",
+    "homepage": "https://github.com/eq-inc/eq-digest-authentication-strategy",
     "license": "Apache-2.0",
     "author": "Kazuma Fujimaki <fujimaki@eq-inc.jp>",
     "main": "index.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/eq-inc/eq-strategy.git"
+        "url": "https://github.com/eq-inc/eq-digest-authentication-strategy.git"
     },
     "scripts": {
         "test": "./node_modules/.bin/mocha ./test"
