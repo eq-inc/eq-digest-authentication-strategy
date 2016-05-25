@@ -6,15 +6,16 @@ Strategy module for [Eq digest authentication](https://github.com/eq-inc/eq-dige
 ```JavaScript
 const digest_authentication = require('eq-digest-authentication'),
     digest_authentication_strategy = require('eq-digest-authentication-strategy'),
-    users = [
-        {username: 'username1', password: 'password1'},
-        {username: 'username2', password: 'password2'}
-    ],
+    type = 'object',
     options = {
         realm: 'realm',
+        algorithm: 'sha-256',
         qop: 'auth',
-        algorithm: 'sha-256'
+        users: [
+            {username: 'username1', password: 'password1'},
+            {username: 'username2', password: 'password2'}
+        ]
     },
-    strategy = digest_authentication_strategy.object(users, options),
+    strategy = digest_authentication_strategy(type, options),
     digest_authentication = digest_authentication(strategy, options);
 ```

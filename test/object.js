@@ -6,27 +6,27 @@
 
 
 // Variables
-let strategy_object;
+let strategy;
 const util = require('util'),
     co = require('co'),
     expect = require('expect.js'),
     utility = require('karmia-utility'),
-    strategy = require('../'),
+    authentication_strategy = require('../'),
     options = {
+        type: 'object',
+        algorithm: 'sha-256',
         realm: 'eq-digest-auth-strategy-object',
-        qop: 'auth'
-    },
-    user_list = [
-        {
+        qop: 'auth',
+        users: {
             username: 'test_username',
             password: 'test_password'
         }
-    ];
+    };
 
 
 // Before
 before(function () {
-    strategy_object = strategy.object(user_list, options);
+    strategy = authentication_strategy(options);
 });
 
 
@@ -35,10 +35,10 @@ describe('Test', function () {
     describe('nonce', function () {
         it('Should get nonce', function (done) {
             co(function* () {
-                const nonce = yield strategy_object.nonce();
+                const nonce = yield strategy.nonce();
 
                 expect(nonce).to.have.length(32);
-                expect(yield strategy_object.storage.has(nonce)).to.be(true);
+                expect(yield strategy.storage.has(nonce)).to.be(true);
 
                 done();
             });
@@ -49,9 +49,9 @@ describe('Test', function () {
         describe('Should get credential data', function () {
             it('Raw', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
-                        credential = yield strategy_object.credential(user.username, false);
+                        credential = yield strategy.credential(user.username, false);
 
                     expect(Object.keys(credential).sort()).to.eql(['md5', 'password', 'sha256', 'sha512', 'username']);
                     expect(credential.username).to.be(user.username);
@@ -67,10 +67,10 @@ describe('Test', function () {
 
             it('MD5', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         md5 = utility.crypto.hash('md5', username).toString('hex'),
-                        credential = yield strategy_object.credential(md5, true, 'md5');
+                        credential = yield strategy.credential(md5, true, 'md5');
 
                     expect(Object.keys(credential).sort()).to.eql(['md5', 'password', 'sha256', 'sha512', 'username']);
                     expect(credential.username).to.be(user.username);
@@ -89,10 +89,10 @@ describe('Test', function () {
 
             it('SHA256', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         sha256 = utility.crypto.hash('sha256', username),
-                        credential = yield strategy_object.credential(sha256, true, 'sha256');
+                        credential = yield strategy.credential(sha256, true, 'sha256');
 
                     expect(Object.keys(credential).sort()).to.eql(['md5', 'password', 'sha256', 'sha512', 'username']);
                     expect(credential.username).to.be(user.username);
@@ -108,10 +108,10 @@ describe('Test', function () {
 
             it('SHA512/256', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         sha512_256 = utility.crypto.hash('sha512/256', username),
-                        credential = yield strategy_object.credential(sha512_256, true, 'sha512/256');
+                        credential = yield strategy.credential(sha512_256, true, 'sha512/256');
 
                     expect(Object.keys(credential).sort()).to.eql(['md5', 'password', 'sha256', 'sha512', 'username']);
                     expect(credential.username).to.be(user.username);
@@ -127,10 +127,10 @@ describe('Test', function () {
 
             it('No algorithm specified', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         md5 = utility.crypto.hash('md5', username),
-                        credential = yield strategy_object.credential(md5, true);
+                        credential = yield strategy.credential(md5, true);
 
                     expect(Object.keys(credential).sort()).to.eql(['md5', 'password', 'sha256', 'sha512', 'username']);
                     expect(credential.username).to.be(user.username);
@@ -150,12 +150,12 @@ describe('Test', function () {
         describe('Should get secret data', function () {
             it('Raw', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         parameters = {
                             username: user.username,
                             userhash: false
                         },
-                        secret = yield strategy_object.secret(null, parameters);
+                        secret = yield strategy.secret(null, parameters);
 
                     expect(secret).to.eql({
                         username: user.username,
@@ -168,14 +168,14 @@ describe('Test', function () {
 
             it('MD5', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         parameters = {
                             username: utility.crypto.hash('md5', username).toString('hex'),
                             userhash: true,
                             algorithm: 'md5'
                         },
-                        secret = yield strategy_object.secret(null, parameters);
+                        secret = yield strategy.secret(null, parameters);
 
                     expect(secret).to.eql({
                         username: parameters.username,
@@ -189,14 +189,14 @@ describe('Test', function () {
 
             it('SHA256', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         parameters = {
                             username: utility.crypto.hash('sha256', username).toString('hex'),
                             userhash: 'true',
                             algorithm: 'sha-256'
                         },
-                        secret = yield strategy_object.secret(null, parameters);
+                        secret = yield strategy.secret(null, parameters);
 
                     expect(secret).to.eql({
                         username: parameters.username,
@@ -210,14 +210,14 @@ describe('Test', function () {
 
             it('SHA512/256', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         parameters = {
                             username: utility.crypto.hash('sha512/256', username).toString('hex'),
                             userhash: 'true',
                             algorithm: 'sha-512-256'
                         },
-                        secret = yield strategy_object.secret(null, parameters);
+                        secret = yield strategy.secret(null, parameters);
 
                     expect(secret).to.eql({
                         username: parameters.username,
@@ -231,13 +231,13 @@ describe('Test', function () {
 
             it('No algorithm specified', function (done) {
                 co(function* () {
-                    const user = user_list[0],
+                    const user = options.users[0],
                         username = util.format('%s:%s', user.username, options.realm),
                         parameters = {
                             username: utility.crypto.hash('md5', username).toString('hex'),
                             userhash: 'true'
                         },
-                        secret = yield strategy_object.secret(null, parameters);
+                        secret = yield strategy.secret(null, parameters);
 
                     expect(secret).to.eql({
                         username: parameters.username,
@@ -254,8 +254,8 @@ describe('Test', function () {
     describe('validate', function () {
         it('Should validation success', function (done) {
             co(function* () {
-                const nonce = yield strategy_object.nonce();
-                strategy_object.validate(null, {nonce: nonce}).then(function () {
+                const nonce = yield strategy.nonce();
+                strategy.validate(null, {nonce: nonce}).then(function () {
                     done();
                 });
             });
@@ -263,7 +263,7 @@ describe('Test', function () {
 
         it('Should be error', function (done) {
             co(function* () {
-                strategy_object.validate(null, {nonce: 'NONCE_NOT_FOUND'}).catch(function (error) {
+                strategy.validate(null, {nonce: 'NONCE_NOT_FOUND'}).catch(function (error) {
                     expect(error.code).to.be(401);
                     expect(error.message).to.be('Unauthorized');
 
