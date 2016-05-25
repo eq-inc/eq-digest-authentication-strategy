@@ -1,0 +1,30 @@
+{
+    "name": "eq-digest-auth-strategy",
+    "version": "0.1.0",
+    "description": "Strategy module for eq-digest-authentication",
+    "homepage": "https://github.com/eq-inc/eq-strategy",
+    "license": "Apache-2.0",
+    "author": "Kazuma Fujimaki <fujimaki@eq-inc.jp>",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eq-inc/eq-strategy.git"
+    },
+    "scripts": {
+        "test": "./node_modules/.bin/mocha ./test"
+    },
+    "dependencies": {
+        "co": ">=4.6.0",
+        "js-sha512": ">=0.2.2",
+        "karmia-storage": ">=0.1.0",
+        "karmia-utility": ">=0.5.3",
+        "lodash": ">=4.6.1"
+    },
+    "devDependencies": {
+        "mocha": ">=2.4.5",
+        "expect.js": ">=0.3.1"
+    },
+    "engines": {
+        "node": ">=6.0.0"
+    }
+}
