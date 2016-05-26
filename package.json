@@ -1,6 +1,6 @@
 {
     "name": "eq-digest-authentication-strategy",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Strategy module for eq-digest-authentication",
     "homepage": "https://github.com/eq-inc/eq-digest-authentication-strategy",
     "license": "Apache-2.0",
@@ -17,7 +17,7 @@
         "co": ">=4.6.0",
         "js-sha512": ">=0.2.2",
         "karmia-storage": ">=0.1.0",
-        "karmia-utility": ">=0.5.3",
+        "karmia-utility": ">=0.5.4",
         "lodash": ">=4.6.1"
     },
     "devDependencies": {
