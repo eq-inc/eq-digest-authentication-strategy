@@ -10,7 +10,7 @@ let strategy;
 const util = require('util'),
     co = require('co'),
     expect = require('expect.js'),
-    utility = require('karmia-utility'),
+    utility = require('karmia-utility')(),
     authentication_strategy = require('../'),
     options = {
         type: 'object',
