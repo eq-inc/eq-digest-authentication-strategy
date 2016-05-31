@@ -1,6 +1,6 @@
 {
     "name": "eq-digest-authentication-strategy",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Strategy module for eq-digest-authentication",
     "homepage": "https://github.com/eq-inc/eq-digest-authentication-strategy",
     "license": "Apache-2.0",
